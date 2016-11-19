@@ -57,7 +57,6 @@ def CheckURLs(urls):
 	except KeyboardInterrupt as e:
 		print 'KeyboardInterrupt' + traceback.format_exc()
 		EXIT_FLAG = True
-		self.response = {'status':'error', 'message': repr(e)}
 	except Exception as e:
 		print traceback.format_exc()
 	print 'Fetched ' + str(_updated)
@@ -79,11 +78,9 @@ class Fetcher(threading.Thread):
 			print 'KeyboardInterrupt' + traceback.format_exc()
 			sys.stdout.flush()
 			EXIT_FLAG = True
-			self.response = {'status':'error', 'message': repr(e)}
 		except Exception as e:
 			print traceback.format_exc()
 			sys.stdout.flush()
-			self.response = {'status':'error', 'message': repr(e)}
 		return
 
 CheckURLs(getUrlsList())
