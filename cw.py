@@ -11,7 +11,7 @@ def getUrlsList():
 		res = f.readlines()
 		urlsList = []
 		for d in res:
-		  data = re.findall('<loc>(https?:\/\/.+)<\/loc>',d)
+		  data = re.findall('<loc>(https?:\/\/.+?)<\/loc>',d)
 		  for i in data:
 			urlsList.append(i)
 		print "Fetched pages: ", len(urlsList)
