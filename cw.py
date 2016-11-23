@@ -2,8 +2,9 @@ import threading
 import urllib2 as ur
 import re, traceback
 import sys
+from datetime import datetime
 
-MAX_PROCESS_COUNT = 100
+MAX_PROCESS_COUNT = 200
 
 def getUrlsList():
 	try:
@@ -56,6 +57,7 @@ def CheckURLs(urls):
 							__activeThreads.remove(thread)
 	except KeyboardInterrupt as e:
 		print 'KeyboardInterrupt' + traceback.format_exc()
+		sys.stdout.flush()
 		EXIT_FLAG = True
 	except Exception as e:
 		print traceback.format_exc()
@@ -71,8 +73,11 @@ class Fetcher(threading.Thread):
 
 	def run(self):
 		try:
-			ur.urlopen(self.url)
-			print self.url
+			p_start = datetime.now()
+			res = ur.urlopen(self.url)
+			p_end = datetime.now()
+			p_delta = p_end - p_start
+			print str(format(float(p_delta.seconds) + float(p_delta.microseconds) / 1000000, '.3f')) + ' ' + str(res.getcode()) + ' ' + self.url
 			sys.stdout.flush()
 		except KeyboardInterrupt as e:
 			print 'KeyboardInterrupt' + traceback.format_exc()
