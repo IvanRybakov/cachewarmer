@@ -1,4 +1,6 @@
 # cachewarmer
 Current usage:
-- Change line 10 to use your sitemap.xml
-- Execute "python /path-to/cw.py"
+- Change cw.py to use your sitemap.xml
+
+cw = CacheWarmer(u'https://site/sitemap.xml', 50)
+cw.start()
