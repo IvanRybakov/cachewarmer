@@ -1,4 +1,4 @@
 # cachewarmer
-Current usage:
-- Change line 10 to use your sitemap.xml
-- Execute "python /path-to/cw.py"
+
+Usage:
+python cwcli.py -s|--sitemap <url> [-c|--threads <threads count>]
