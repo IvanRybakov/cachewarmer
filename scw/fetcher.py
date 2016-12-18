@@ -6,7 +6,7 @@ import traceback
 
 class Fetcher(threading.Thread):
 	def __init__(self, app, url):
-		threading.Thread.__init__(self)
+		super(Fetcher, self).__init__()
 		self.app = app
 		self.url = url
 		self.load_time = 0.0
@@ -26,7 +26,7 @@ class Fetcher(threading.Thread):
 				self.code = http_error.code
 			self.load_time = self.app.deltaSeconds(p_delta)
 		except KeyboardInterrupt as e:
-			self.app.getExitFlag(True)
+			self.app.setExitFlag(True)
 			self.app.printflush( 'KeyboardInterrupt' + traceback.format_exc())
 		except Exception as e:
 			self.app.printflush( traceback.format_exc())

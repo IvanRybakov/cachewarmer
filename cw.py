@@ -109,6 +109,3 @@ class CacheWarmer():
 			self.code_statistics[thread.code] += 1
 		# update count of processed pages
 		self.updated_count += 1
-
-cw = CacheWarmer(u'https://site/sitemap.xml', 50)
-cw.start()
