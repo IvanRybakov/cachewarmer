@@ -6,6 +6,7 @@ import os
 
 from scw.fetcher import Fetcher
 from scw.app import App
+from scw.urlmanager import URLManager
 
 
 class CacheWarmer():
@@ -13,12 +14,12 @@ class CacheWarmer():
 		self.processes = processes
 		self.active_threads = []
 		self.app = App()
-		self.urls = []
 		self.updated_count = 0
 		self.fetched_count = 0
 		self.sitemap_url = sitemap
 		self.code_statistics = {}
 		self.average_time = 0.0
+		self.url_manager = URLManager(self.app)
 
 	def start(self):
 		"""
@@ -51,12 +52,12 @@ class CacheWarmer():
 			res = f.readlines()
 			for d in res:
 			  data = re.findall('<loc>(https?:\/\/.+?)<\/loc>',d)
-			  for i in data:
-				self.urls.append(i)
+			  for url in data:
+				self.app.add_url(url)
 		except Exception as e:
 			self.app.printflush(str(e))
 			self.app.printflush(traceback.format_exc())
-		self.fetched_count = len(self.urls)
+		self.fetched_count = len(self.app.get_url_queue())
 
 
 	def CheckURLs(self):
@@ -65,14 +66,18 @@ class CacheWarmer():
 		"""
 		self.updated_count = 0
 		self.app.setExitFlag(False)
+		if (self.app.enable_crawler):
+			self.app.printflush('Crawler enabled!')
+			self.url_manager.start()
 		try:
-			parsed_params = self.urls
+			parsed_params = self.app.get_url_queue()
 			while (parsed_params):
 				self.active_threads = []
 				while True:
 					while len(self.active_threads) < self.processes and len(parsed_params) > 0:
 						urlItem = parsed_params.pop()
 						if urlItem != None:
+							self.app.add_url_to_log(urlItem)
 							thread = Fetcher(self.app, urlItem)
 							thread.start()
 							self.active_threads.append( thread )
@@ -83,15 +88,17 @@ class CacheWarmer():
 					else:
 						for thread in self.active_threads:
 							if not thread.isAlive():
+								self.url_manager.add_html_to_parse(thread.html, thread.url)
 								thread.printStatus()
 								self.collectStat(thread)
 								self.active_threads.remove(thread)
 				if self.app.getExitFlag():
 					break
 		except KeyboardInterrupt as e:
-			self.app.setExitFlag(True)
+			self.app.printflush('KeyboardInterrupt')
 		except Exception as e:
 			self.app.printflush(traceback.format_exc())
+		self.app.setExitFlag(True)
 			
 	def collectStat(self, thread):
 		"""

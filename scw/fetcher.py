@@ -11,6 +11,7 @@ class Fetcher(threading.Thread):
 		self.url = url
 		self.load_time = 0.0
 		self.code = None
+		self.html = ''
 
 	def run(self):
 		try:
@@ -20,6 +21,7 @@ class Fetcher(threading.Thread):
 				p_end = datetime.now()
 				p_delta = p_end - p_start
 				self.code = res.getcode()
+				self.html = res.read()
 			except HTTPError as http_error:
 				p_end = datetime.now()
 				p_delta = p_end - p_start
