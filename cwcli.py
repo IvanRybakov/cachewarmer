@@ -1,8 +1,9 @@
-#!/usr/bin/python
-
-from cw import CacheWarmer
-import sys, getopt
+#!/usr/bin/python3
 import os
+__path__=[os.path.dirname(os.path.abspath(__file__))]
+
+from .cw.CacheWarmer import CacheWarmer
+import sys, getopt
 
 def main(argv):
     sitemap_url = ''
@@ -26,7 +27,7 @@ def main(argv):
 
 def printHelp():
     file = os.path.basename(__file__)
-    print file + ' -s|--sitemap <url> [-c|--threads <threads count>]'
+    print(file + ' -s|--sitemap <url> [-c|--threads <threads count>]')
 
 if __name__ == "__main__":
     main(sys.argv[1:])
